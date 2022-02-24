@@ -36,13 +36,16 @@ namespace WebApi.Controllers
             try
             {
                 var devList = _developerService.GetAll();
-                if(devList==null)
-                    return NotFound();
-                return Ok(devList);
+                
+                if (devList==null) return NotFound();
+
+                throw new Exception("Error occured");
+              
             }
-            catch(Exception)
+            catch(Exception ex)
             {
-                return BadRequest();
+                _logger.LogError(ex.ToString());
+                return BadRequest(ex.ToString());
             }
             
         }
@@ -64,8 +67,9 @@ namespace WebApi.Controllers
             }
             catch(Exception)
             {
+                
+                _logger.LogInformation("Unable to save changes.");
                 return BadRequest();
-                /*_logger.LogInformation("Unable to save changes.");*/
             }
             return Ok();
 
@@ -110,11 +114,10 @@ namespace WebApi.Controllers
         {
             if (id == 0)
             {
-                _logger.LogWarning($"Dev with id {id} not found");
+               _logger.LogWarning($"Dev with id {id} not found");
+
                 return NotFound();
             }
-               
-
             try
             {
                 var devDel = _developerService.Remove(id);
@@ -127,7 +130,7 @@ namespace WebApi.Controllers
             catch (Exception)
             {
                 // _logger.LogError($"Dev with id {id} not found");
-                _logger.LogError($"please enter valid Id");
+               _logger.LogError($"please enter valid Id");
                 return BadRequest();
             }
 
@@ -140,7 +143,7 @@ namespace WebApi.Controllers
         {
             if (id <= 0 )
             {
-                throw new InvalidException("Invalid developer id");
+                //throw new InvalidException("Invalid developer id");
             }
             
             var status = _developerService.Get(id);

@@ -18,6 +18,7 @@ using Services.Iservices;
 using Services.Services;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
@@ -54,11 +55,13 @@ namespace WebApi
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env /*ILoggerFactory loggerFactory*/)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env/*, ILoggerFactory loggerFactory*/)
         {
-            
+
             //loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             //loggerFactory.AddDebug();
+            //var path = Directory.GetCurrentDirectory();
+            //loggerFactory.AddFile($"{path}\\Logs\\Log.txt");
 
             if (env.IsDevelopment())
             {
