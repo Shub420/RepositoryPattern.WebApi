@@ -30,6 +30,9 @@ namespace WebApi.Controllers
         {
 
             var proList = _unitOfWork.Project.GetAll().Select(_mapper.Map<Project,ProjectDto>);
+            //Exception
+            var project = proList.SingleOrDefault();
+
             return Ok(proList);
         }
         [HttpPost]
@@ -60,6 +63,10 @@ namespace WebApi.Controllers
         [HttpDelete]
         public IActionResult DeleteProj(int id )
         {
+            if (id <= 0)
+            {
+                throw new InvalidException("Invalid Project id");
+            }
             var proj = _unitOfWork.Project.Get(id);
             _unitOfWork.Project.Remove(proj);
             return NoContent();

@@ -22,7 +22,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
-using WebApi.Middleware;
+using WebApi.Extensions;
 
 namespace WebApi
 {
@@ -69,8 +69,11 @@ namespace WebApi
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "WebApi v1"));
             }
-
             //app.UseMiddleware(typeof(ExceptionHandlingMiddleware));
+            //Added 
+            var connectionString = Configuration.GetConnectionString("ConStr");
+            app.ConfigureCustomExceptionMiddleware(connectionString);
+
             app.UseHttpsRedirection();
 
             app.UseRouting();

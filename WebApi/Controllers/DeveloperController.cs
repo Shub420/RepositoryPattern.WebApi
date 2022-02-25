@@ -1,4 +1,5 @@
-﻿using Domain.Dtos;
+﻿using DataAccess.EFCore;
+using Domain.Dtos;
 using Domain.Entities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -19,11 +20,13 @@ namespace WebApi.Controllers
         //private readonly IUnitOfWork _unitOfWork;
         private readonly IDeveloperService _developerService;
         private readonly ILogger<DeveloperController> _logger;
-        public DeveloperController(IDeveloperService developerService, ILogger<DeveloperController> logger)
+        private readonly ApplicationDbContext _context;
+        public DeveloperController(IDeveloperService developerService, ILogger<DeveloperController> logger, ApplicationDbContext context)
         {
             //_unitOfWork = unitOfWork;
             _developerService = developerService;
             _logger = logger;
+            _context = context;
         }
 
         /// <summary>
@@ -36,18 +39,15 @@ namespace WebApi.Controllers
             try
             {
                 var devList = _developerService.GetAll();
-                
-                if (devList==null) return NotFound();
-
-                throw new Exception("Error occured");
-              
+                if (devList == null)
+                    return NotFound();
+                return Ok(devList);
             }
-            catch(Exception ex)
+            catch (Exception)
             {
-                _logger.LogError(ex.ToString());
-                return BadRequest(ex.ToString());
+                return BadRequest();
             }
-            
+
         }
         /// <summary>
         /// Add new Developer
@@ -65,13 +65,13 @@ namespace WebApi.Controllers
                     _developerService.AddDto(developer);
                 }
             }
-            catch(Exception)
+            catch (Exception)
             {
-                
-                _logger.LogInformation("Unable to save changes.");
                 return BadRequest();
+                /*_logger.LogInformation("Unable to save changes.");*/
             }
             return Ok();
+
 
         }
         /// <summary>
@@ -114,9 +114,9 @@ namespace WebApi.Controllers
         {
             if (id == 0)
             {
-               _logger.LogWarning($"Dev with id {id} not found");
+               //_logger.LogWarning($"Dev with id {id} not found");
 
-                return NotFound();
+                return NotFound($"Dev with id {id} not found");
             }
             try
             {
@@ -127,10 +127,18 @@ namespace WebApi.Controllers
                 //}
                 return Ok(devDel);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                //Log log = new Log()
+                //{
+                //    ExpMessage = ex.Message
+                    
+                //};
+                //_context.Logs.Add(log);
+                //_context.SaveChanges();
                 // _logger.LogError($"Dev with id {id} not found");
-               _logger.LogError($"please enter valid Id");
+                _logger.LogError(ex.ToString());
+                _logger.LogError($"please enter valid Id");
                 return BadRequest();
             }
 
@@ -144,6 +152,7 @@ namespace WebApi.Controllers
             if (id <= 0 )
             {
                 //throw new InvalidException("Invalid developer id");
+                _logger.LogError($"{id} not found ");
             }
             
             var status = _developerService.Get(id);
@@ -152,16 +161,6 @@ namespace WebApi.Controllers
             return Ok(status);
         }
 
-        //[HttpGet("{id:int}", Name = "GetDev")]
-        //public IActionResult GetDev(int id)
-        //{
-            
-        //    if (id == 0)
-        //        return BadRequest();
-        //    var status = _developerService.Get(id);
-        //    if (status == null)
-        //        return NotFound();
-        //    return Ok(status);
-        //}
+      
     }
 }
