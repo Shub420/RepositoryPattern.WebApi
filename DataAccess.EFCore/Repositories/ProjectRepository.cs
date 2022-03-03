@@ -17,8 +17,21 @@ namespace DataAccess.EFCore.Repositories
 
         public bool update(Project project)
         {
-            _context.Update(project);
-            return Save();
+            if(project==null)
+            {
+                throw new ArgumentNullException($"{nameof(update)} entity must not be null");
+            }
+            try
+            {
+                _context.Update(project);
+                return Save();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"{nameof(project)} could not be updated: {ex.Message}");
+            }
+
         }
     }
 }
+    

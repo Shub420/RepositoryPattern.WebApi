@@ -21,8 +21,20 @@ namespace DataAccess.EFCore.Repositories
 
         public bool Add(T entity)
         {
-            dbset.Add(entity);
-            return Save();
+            if(entity==null)
+            {
+                throw new ArgumentNullException($"{nameof(Add)} entity must not be null");
+            }
+            try
+            {
+                dbset.Add(entity);
+                return Save();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"{nameof(entity)} could not be saved: {ex.Message}");
+            }
+
         }
 
         public T Get(int Id)
@@ -32,7 +44,15 @@ namespace DataAccess.EFCore.Repositories
 
         public IEnumerable<T> GetAll()
         {
-            return dbset.ToList();
+            try 
+            {
+                return dbset.ToList();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Couldn't retrieve entities: {ex.Message}");
+            }
+
         }
 
         public bool Remove(T entity)

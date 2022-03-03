@@ -10,7 +10,7 @@ namespace DataAccess.EFCore.Repositories
     public class UnitOfWork : IUnitOfWork
     {
         private readonly ApplicationDbContext _context;
-        private DeveloperRepository _DeveloperRepository { get; set; }
+        //private DeveloperRepository _DeveloperRepository { get; set; }
         public UnitOfWork(ApplicationDbContext context)
         {
             _context = context;
