@@ -31,7 +31,7 @@ namespace WebApi.Controllers
 
             var proList = _unitOfWork.Project.GetAll().Select(_mapper.Map<Project,ProjectDto>);
             //Exception
-            var project = proList.SingleOrDefault();
+            //var project = proList.SingleOrDefault();
 
             return Ok(proList);
         }

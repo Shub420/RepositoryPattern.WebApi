@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -45,9 +46,17 @@ namespace WebApi
             services.AddTransient<IUnitOfWork, UnitOfWork>();
             services.AddScoped<IDeveloperService, DeveloperServices>();
             services.AddAutoMapper(typeof(MappingProfile));
+            //services.AddMvc(options =>
+            //{
+            //    options.InputFormatters.Add(new XmlSerializerOutputFormatter());
+            //});
 
 
-            services.AddControllers();
+            services.AddControllers(options=> 
+            {
+                options.RespectBrowserAcceptHeader = true;
+                options.OutputFormatters.Add(new CsvOutputFormatter());
+            });
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "WebApi", Version = "v1" });
