@@ -13,8 +13,10 @@ using System.Threading.Tasks;
 
 namespace WebApi.Controllers
 {
-    [Route("api/[controller]")]
     [ApiController]
+    //[ApiConventionType(typeof(DefaultApiConventions))]
+    [Route("api/[controller]")]
+   
     public class ProjectController : ControllerBase
     {
         private readonly IUnitOfWork _unitOfWork;
@@ -26,6 +28,8 @@ namespace WebApi.Controllers
         }
 
         [HttpGet]
+        [ApiConventionMethod(typeof(MyAppConventions), nameof(MyAppConventions.Get))]
+       // [ApiConventionMethod(typeof(DefaultApiConventions),nameof(DefaultApiConventions.Get))]
         public IActionResult GetAllProjects()
         {
 
@@ -52,12 +56,14 @@ namespace WebApi.Controllers
         [HttpPatch]
         public IActionResult UpdateProject([FromBody]ProjectDto projectDto)
         {
+
             if (projectDto == null)
-                return BadRequest(StatusCodes.Status500InternalServerError);
+                return BadRequest(StatusCodes.Status400BadRequest);
             if (!ModelState.IsValid)
                 return BadRequest();
             var proj = _mapper.Map<ProjectDto,Project>(projectDto);
-            return Ok(proj);
+            _unitOfWork.Project.update(proj);
+            return Ok();
         }
 
         [HttpDelete]

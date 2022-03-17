@@ -25,8 +25,11 @@ using System.Net;
 using System.Threading.Tasks;
 using WebApi.Extensions;
 
+
+//[assembly: ApiConventionType(typeof(DefaultApiConventions))]
 namespace WebApi
 {
+
     public class Startup
     {
         public Startup(IConfiguration configuration)
